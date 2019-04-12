@@ -34,7 +34,7 @@ if (!ObjectID.isValid(id)) {
 Users.findById(id)
   .then(user => {
     if (!user) {
-      return console.log("Id not found!");
+      return console.log("Unable to find user");
     }
     console.log(JSON.stringify(user, undefined, 2));
   })
