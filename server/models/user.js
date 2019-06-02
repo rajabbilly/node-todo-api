@@ -3,9 +3,9 @@ const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const _ = require("lodash");
 
-mongoose.plugin(schema => {
-  schema.options.usePushEach = true;
-});
+// mongoose.plugin(schema => {
+//   schema.options.usePushEach = true;
+// });
 
 var UserSchema = new mongoose.Schema({
   email: {
@@ -56,6 +56,23 @@ UserSchema.methods.generateAuthToken = function() {
 
   return user.save().then(() => {
     return token;
+  });
+};
+
+UserSchema.statics.findByToken = function(token) {
+  var User = this;
+  var decoded;
+
+  try {
+    decoded = jwt.verify(token, "abc123");
+  } catch (e) {
+    return Promise.reject();
+  }
+
+  return User.findOne({
+    _id: decoded._id,
+    "tokens.token": token,
+    "tokens.access": "auth"
   });
 };
 
